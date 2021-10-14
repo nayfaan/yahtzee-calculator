@@ -11,14 +11,14 @@ app = Flask(__name__,
             template_folder="web/templates")
 
 #Starting web app
-@app.route("/index", methods=["GET", "POST", "PUT"])
+@app.route("/", methods=["GET", "POST", "PUT"])
 def index():
     global dice_1, dice_2, dice_3, dice_4, dice_5
     global yahtzee
     
     #idfk where this came from
     if request.method == "GET":
-        return render_template("index.html", dice_1=dice_1, dice_2=dice_2, dice_3=dice_3, dice_4=dice_4, dice_5=dice_5)
+        return render_template("index.html")#, dice_1=dice_1, dice_2=dice_2, dice_3=dice_3, dice_4=dice_4, dice_5=dice_5)
     
     #background process: clicking
     elif request.method == "PUT":
@@ -33,7 +33,7 @@ def index():
     
     
 def main():
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="localhost", port=8080, debug=True)
     
 
 if __name__ == "__main__":

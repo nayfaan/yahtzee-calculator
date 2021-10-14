@@ -6,7 +6,7 @@ python3 -m pip install -r requirements.txt
 
 osascript -e "tell application \"Safari\"
     make new document
-    set URL of document 1 to \"http://127.0.0.1:8080\"
+    set URL of document 1 to \"http://localhost:8080\"
     activate
 end tell"
 

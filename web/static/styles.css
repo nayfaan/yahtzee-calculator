@@ -1,7 +1,71 @@
-.double-border td {
+.double-border>tbody>tr>td {
     border-style: double;
 }
 
-.double-border {
+.single-border>tbody>tr>td {
+    border: 1.5px solid #3d403f;
+}
+
+.single-border {
+    border: 3px solid;
+}
+
+table {
     border-collapse: collapse;
+}
+
+#score-board {
+    background-color: #fffbef;
+    white-space: nowrap;
+}
+
+#score-board tr>td:first-child{
+    font-size: 0.75em;
+    width: 0.01%;
+}
+
+#score-board tr>td:nth-child(2){
+    font-weight: bold;
+    text-align: center;
+    min-width: 2.5em;
+}
+
+#score-board tr:first-child>td{
+    font-size: 1.25em !important;
+    font-weight: bold;
+}
+
+#score-board tr:last-child>td:nth-child(2){
+    font-weight: normal;
+}
+
+#score-board tr#subtotal>td{
+    font-size: 0.65em !important;
+    font-weight: normal;
+}
+
+#score-board tr#subtotal>td:first-child, #score-board tr#bonus>td:first-child, #score-board tr#total>td:first-child{
+    background-color: #3d403f;
+    color: white;
+}
+
+#score-board tr#subtotal>td:not(:first-child), #score-board tr#bonus>td:not(:first-child){
+    background-color: #a8a8a8;
+    color: white;
+}
+
+#score-board tr#subtotal>td:nth-child(2){
+    text-align: right;
+}
+
+.icon-score {
+    height: 1em;
+}
+
+.dice-td {
+    padding: 1%;
+}
+
+.dice {
+    max-width: 100%;
 }
