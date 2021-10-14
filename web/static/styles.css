@@ -1,1 +1,7 @@
+.double-border td {
+    border-style: double;
+}
 
+.double-border {
+    border-collapse: collapse;
+}
