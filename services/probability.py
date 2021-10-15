@@ -195,7 +195,7 @@ class dice:
         if not isinstance(locked, bool):
             raise TypeError("locked must be a bool")
         self.face = face
-        self.lock = locked
+        self.locked = locked
         self.state = {"face": face, "locked": locked}
         
     def __str__(self):
@@ -224,29 +224,53 @@ expect_base_dict = {
         "score_bs": 0,
         "score_ya": 0
     }
+
 for face in possibilities_set:
     score_list = rolls(face2data(face)).score
     for score_item in expect_base_dict.keys():
         expect_base_dict[score_item] += score_list[score_item] * calc_probability_base(face)
 
-def restrict_possibilities_locked(roll):
+def sublist(parent_list,child_list):
+    sublist = True
+    
+    for y in set(child_list):
+        if parent_list.count(y) < child_list.count(y):
+            sublist = False
+            
+    return sublist
+
+def restrict_possibilities_locked(roll, sort = False):
     possibilities_sorted_locked = possibilities_sorted
     locked_list = []
-    #TBW
-    return possibilities_sorted_locked
+    for y in roll.data:
+        if y.locked:
+            locked_list.append(y.face)
+    
+    filtered_possibilities = []
+    for x in possibilities_sorted_locked:
+        if sublist(x,locked_list):
+            filtered_possibilities.append(x)
+    if sort:
+        for i in range(len(filtered_possibilities)):
+            filtered_possibilities[i] = tuple(sorted(list(filtered_possibilities[i])))
+        filtered_possibilities = sorted(filtered_possibilities)
+    
+    return filtered_possibilities
 
-def calc_probability_locked():
-    pass
+def calc_probability_locked(face, roll):
+    conditional_base = restrict_possibilities_locked(roll,True)
+    prob = conditional_base.count(tuple(sorted(list(face))))/len(conditional_base)
+    return prob
 
 def calc_expectation_locked():
     pass
 
 if __name__ == "__main__":
     dice1 = dice(6,False)
-    dice2 = dice(2,False)
-    dice3 = dice(3,False)
-    dice4 = dice(4,False)
-    dice5 = dice(5,False)
+    dice2 = dice(2,True)
+    dice3 = dice(3,True)
+    dice4 = dice(4,True)
+    dice5 = dice(6,True)
     roll = rolls((dice1,dice2,dice3,dice4,dice5))
 
-    print(expect_base_dict)
+    print(restrict_possibilities_locked(roll, False).count((1,2,3,4,6)))
