@@ -1,20 +1,20 @@
 var score_list = {
-    "score-tu": null,
-    "score-1": null,
-    "score-2": null,
-    "score-3": null,
-    "score-4": null,
-    "score-5": null,
-    "score-6": null,
-    "score-st": null,
-    "score-bo": null,
-    "score-ch": null,
-    "score-4k": null,
-    "score-fh": null,
-    "score-ss": null,
-    "score-bs": null,
-    "score-ya": null,
-    "score-to": null
+    "score_tu": null,
+    "score_1": null,
+    "score_2": null,
+    "score_3": null,
+    "score_4": null,
+    "score_5": null,
+    "score_6": null,
+    "score_st": null,
+    "score_bo": null,
+    "score_ch": null,
+    "score_4k": null,
+    "score_fh": null,
+    "score_ss": null,
+    "score_bs": null,
+    "score_ya": null,
+    "score_to": null
 };
 var temp = 0;
 
