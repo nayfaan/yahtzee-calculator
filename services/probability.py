@@ -1,4 +1,5 @@
 import statistics as stat
+import itertools
 
 def score_1(roll):
     score = -1
@@ -123,27 +124,33 @@ def score_ya(roll):
         raise ValueError('Score not calculated: '+str(roll)+'.ya')
     return score
 
-global possibilities
-possibilities = []
-for i1 in range(6):
-    for i2 in range(6):
-        for i3 in range(6):
-            for i4 in range(6):
-                for i5 in range(6):
-                    possibilities.append(tuple([i1+1,i2+1,i3+1,i4+1,i5+1]))
+global dice_options
+dice_options = (1,2,3,4,5,6)
 
-global possibilities_sorted
-possibilities_sorted = possibilities
-for i in range(len(possibilities_sorted)):
-    possibilities_sorted[i] = tuple(sorted(list(possibilities_sorted[i])))
-possibilities_sorted = sorted(possibilities_sorted)
+def roll_results(face_locked=[]):
+   possibilities = list(itertools.product(dice_options, repeat = 5 - len(face_locked)))
+   
+   if face_locked:
+       for i in range(len(possibilities)):
+           possibilities[i] = tuple(sorted(list(possibilities[i]) + face_locked))
+           
+   possibilities = sorted(possibilities)
+   return possibilities
 
-global possibilities_set
-possibilities_set = sorted(list(set(possibilities_sorted)))
+def sort_sort_list(possibility):
+    for i in range(len(possibility)):
+        possibility[i] = tuple(sorted(list(possibility[i])))
+    possibility = sorted(possibility)
+    return possibility
 
-def calc_probability_base(face):
-    prob = possibilities_sorted.count(tuple(sorted(list(face))))/len(possibilities_sorted)
-    return prob
+#global possibilities_sorted
+#possibilities_sorted = sort_sort_list(roll_results())
+
+def set_list(possibility):
+    return sorted(list(set(sort_sort_list(possibility))))
+
+#global possibilities_set
+#possibilities_set = sorted(list(set(possibilities_sorted)))
 
 class rolls:
     def __init__(self, data, turns_left = 2):
@@ -209,6 +216,7 @@ def face2data(face):
     
     return tuple(data)
 
+global expect_base_dict_empty
 global expect_base_dict
 expect_base_dict = {
         "score_1": 0,
@@ -224,11 +232,18 @@ expect_base_dict = {
         "score_bs": 0,
         "score_ya": 0
     }
+expect_base_dict_empty = expect_base_dict
 
-for face in possibilities_set:
-    score_list = rolls(face2data(face)).score
-    for score_item in expect_base_dict.keys():
-        expect_base_dict[score_item] += score_list[score_item] * calc_probability_base(face)
+def calc_probability(face, roll):
+    conditional_base = restrict_possibilities_locked(roll,True)
+    prob = conditional_base.count(tuple(sorted(list(face))))/len(conditional_base)
+    return prob
+
+def expected(roll):
+    for face in set_list(restrict_possibilities_locked(roll)):
+        score_list = rolls(face2data(face)).score
+        for score_item in expect_base_dict.keys():
+            expect_base_dict[score_item] += score_list[score_item] * calc_probability(face,roll)
 
 def sublist(parent_list,child_list):
     sublist = True
@@ -240,7 +255,7 @@ def sublist(parent_list,child_list):
     return sublist
 
 def restrict_possibilities_locked(roll, sort = False):
-    possibilities_sorted_locked = possibilities_sorted
+    possibilities_sorted_locked = sort_sort_list(roll_results())
     locked_list = []
     for y in roll.data:
         if y.locked:
@@ -257,20 +272,39 @@ def restrict_possibilities_locked(roll, sort = False):
     
     return filtered_possibilities
 
-def calc_probability_locked(face, roll):
-    conditional_base = restrict_possibilities_locked(roll,True)
-    prob = conditional_base.count(tuple(sorted(list(face))))/len(conditional_base)
-    return prob
+def roll_possibilities_locked(roll):
+    face_locked = []
+    for dice in roll:
+        if dice.locked:
+            face_locked.append(dice.face)
+            
+    if len(face_locked) >= 5:
+        possibilities_locked = [tuple(sorted(face_locked))]
+    else:
+        possibilities_locked = roll_results(face_locked)
+    
+    #possibilities.append(tuple([i1+1,i2+1,i3+1,i4+1,i5+1]))
+    
+    return possibilities_locked
 
-def calc_expectation_locked():
-    pass
+
+#WRONG
+def calc_expectation_locked(roll):
+    for face in set(restrict_possibilities_locked(roll, True)):
+        score_list = rolls(face2data(face)).score
+        face_prob = calc_probability(face,roll)
+        #print(face,score_list,face_prob)#debug
+        for score_item in expect_base_dict.keys():
+            expect_base_dict_empty[score_item] += score_list[score_item] * face_prob
+    return expect_base_dict_empty
 
 if __name__ == "__main__":
-    dice1 = dice(6,False)
-    dice2 = dice(2,True)
-    dice3 = dice(3,True)
-    dice4 = dice(4,True)
+    dice1 = dice(1,False)
+    dice2 = dice(6,True)
+    dice3 = dice(6,True)
+    dice4 = dice(6,True)
     dice5 = dice(6,True)
     roll = rolls((dice1,dice2,dice3,dice4,dice5))
 
-    print(restrict_possibilities_locked(roll, False).count((1,2,3,4,6)))
+    print(calc_expectation_locked(roll))
+    
