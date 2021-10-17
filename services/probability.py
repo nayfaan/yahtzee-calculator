@@ -125,7 +125,7 @@ def score_ya(roll):
     return score
 
 global dice_options
-dice_options = (1,2,3,4,5,6)
+dice_options = tuple(range(1,7))
 
 def get_locked_list(roll):
     locked = []
@@ -161,6 +161,22 @@ def set_list(possibility):
 #global possibilities_set
 #possibilities_set = sorted(list(set(possibilities_sorted)))
 
+def score(face):
+    return {
+            "score_1": score_1(face),
+            "score_2": score_2(face),
+            "score_3": score_3(face),
+            "score_4": score_4(face),
+            "score_5": score_5(face),
+            "score_6": score_6(face),
+            "score_ch": score_ch(face),
+            "score_4k": score_4k(face),
+            "score_fh": score_fh(face),
+            "score_ss": score_ss(face),
+            "score_bs": score_bs(face),
+            "score_ya": score_ya(face)
+        }
+
 class rolls:
     def __init__(self, data, turns_left = 2):
         if not isinstance(data, tuple):
@@ -170,25 +186,22 @@ class rolls:
         self.data = data
         self.roll = self.__roll__()
         self.face = self.__face__()
-        self.score = {
-                "score_1": score_1(self.face),
-                "score_2": score_2(self.face),
-                "score_3": score_3(self.face),
-                "score_4": score_4(self.face),
-                "score_5": score_5(self.face),
-                "score_6": score_6(self.face),
-                "score_ch": score_ch(self.face),
-                "score_4k": score_4k(self.face),
-                "score_fh": score_fh(self.face),
-                "score_ss": score_ss(self.face),
-                "score_bs": score_bs(self.face),
-                "score_ya": score_ya(self.face)
-            }
+        self.lock = self.__lock__()
+        self.score = score(self.face)
         self.turns_left = turns_left
     
     def __str__(self):
         s = str([str(x) for x in self.data])
         return s
+    
+    def __eq__(self, other):
+        return (self.face, self.lock, self.turns_left) == (other.face, other.lock, other.turns_left)
+    
+    def __gt__(self, other):
+        return (self.face, self.lock, self.turns_left) > (other.face, other.lock, other.turns_left)
+    
+    def __hash__(self):
+        return hash((self.face, self.lock, self.turns_left))
     
     def __roll__(self):
         roll = []
@@ -202,8 +215,14 @@ class rolls:
             face.append(x.get("face"))
         return tuple(face)
     
+    def __lock__(self):
+        lock = []
+        for x in self.roll:
+            lock.append(x.get("locked"))
+        return tuple(lock)
+    
 class dice:
-    def __init__(self, face, locked):
+    def __init__(self, face, locked = False):
         if not isinstance(face, int):
             raise TypeError("face must be an int")
         if face > 6 or face < 1:
@@ -216,6 +235,15 @@ class dice:
         
     def __str__(self):
         return str(self.state)
+    
+    def __eq__(self, other):
+        return (self.face, self.locked) == (other.face, other.locked)
+    
+    def __gt__(self, other):
+        return (self.face, self.locked) > (other.face, other.locked)
+    
+    def __hash__(self):
+        return hash((self.face, self.locked))
 
 def face2data(face):
     data = list(face)
@@ -263,7 +291,7 @@ def sublist(parent_list,child_list):
             
     return sublist
 
-def roll_possibilities_locked(roll):
+'''def roll_possibilities_locked(roll):
     face_locked = get_locked_list(roll)
             
     if len(face_locked) >= 5:
@@ -273,14 +301,63 @@ def roll_possibilities_locked(roll):
     
     #possibilities.append(tuple([i1+1,i2+1,i3+1,i4+1,i5+1]))
     
-    return possibilities_locked
+    return possibilities_locked'''
+
+def roll_results_probability(roll):
+    probability_dict = {}
+    for face in set_list(roll_results(roll)):
+        probability_dict.update({face:{"probability": calc_probability(face,roll), "score": score(face)}})
+    return probability_dict
+
+def decision_tree(roll):
+    lock_decision_tree_temp = set()
+    lock_decision_tree = []
+    lock_matrix = list(itertools.product((False, True), repeat = 5))
+    for lock_route in lock_matrix:
+        for i in range(len(lock_route)):
+            roll_data = (
+                dice(roll.face[0],lock_route[0]),
+                dice(roll.face[1],lock_route[1]),
+                dice(roll.face[2],lock_route[2]),
+                dice(roll.face[3],lock_route[3]),
+                dice(roll.face[4],lock_route[4])
+                )
+            
+            temp_size = len(lock_decision_tree_temp)
+            lock_decision_tree_temp.add(tuple(sorted(roll_data)))
+            if not len(lock_decision_tree_temp) == temp_size:
+                lock_decision_tree.append(rolls(roll_data, roll.turns_left - 1))
+            
+    return tuple(lock_decision_tree)
+
+def full_analysis(roll):
+    #WIP Reursion
+    
+    
+    
+    full_roll_tree = {}
+    
+    roll_tree = {}
+    
+    for x in decision_tree(roll):
+        '''x_results = roll_results(x)
+        x_results_with_probability_score = {}
+        for y in x_results:
+            x_results_with_probability_score.update({y: roll_results_probability(y)})'''
+        roll_tree.update({x: roll_results_probability(x) })
+        
+    full_roll_tree.update({roll: roll_tree})
+    
+    roll.turns_left -= 1
+    
+    return full_roll_tree
 
 if __name__ == "__main__":
-    dice1 = dice(1,True)
-    dice2 = dice(2,True)
-    dice3 = dice(4,True)
-    dice4 = dice(6,False)
-    dice5 = dice(6,False)
+    dice1 = dice(1,False)
+    dice2 = dice(4,False)
+    dice3 = dice(2,False)
+    dice4 = dice(2,False)
+    dice5 = dice(3,False)
     roll = rolls((dice1,dice2,dice3,dice4,dice5))
 
-    print(roll)   
+    print(full_analysis(roll))

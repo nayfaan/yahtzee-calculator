@@ -79,7 +79,7 @@ $('#roll-button').on({
             error: function(xhr,status,error){
                 alert("ERROR: " + xhr.status + ": " + xhr.statusText + "\n" + status + "\n" + error);
             },
-            success: function(result,status,xhr){
+            success: function(result,status,xhr){//WIP
                 console.log(result);
                 $('#debug').html("DEBUG?");
             }
