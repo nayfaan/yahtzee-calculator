@@ -187,7 +187,7 @@ class rolls:
         self.turns_left = turns_left
     
     def __str__(self):
-        s = str(self.face) + ": " + str(self.score)
+        s = str([str(x) for x in self.data])
         return s
     
     def __roll__(self):
@@ -283,4 +283,4 @@ if __name__ == "__main__":
     dice5 = dice(6,False)
     roll = rolls((dice1,dice2,dice3,dice4,dice5))
 
-    print(expected(roll))   
+    print(roll)   

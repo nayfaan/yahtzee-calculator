@@ -22,14 +22,13 @@ def index():
     
     #background process: clicking
     elif request.method == "PUT":
-        return jsonify({})
+        return jsonify({"roll": str(rolls((dice(1,True),dice(2,True),dice(3,True),dice(4,True),dice(5,True))))})#WIP
         
     
     #post method, only called at initiation (?)
     else:
-        yahtzee = yahtzee
-        
-        return render_template("index.html", dice_1=dice_1, dice_2=dice_2, dice_3=dice_3, dice_4=dice_4, dice_5=dice_5)
+        #yahtzee = yahtzee
+        return render_template("index.html")#, dice_1=dice_1, dice_2=dice_2, dice_3=dice_3, dice_4=dice_4, dice_5=dice_5)
     
     
 def main():

@@ -34,10 +34,15 @@ var dice_list = {
     "dice-5": null
 };
 
-function roll_die(){
+function roll_die(face={}){
     for(var key in dice_list) {
         var value = dice_list[key];
-        var new_face = (Math.floor(Math.random() * 6) + 1).toString();
+        var new_face = null;
+        if(jQuery.isEmptyObject(face)){
+            new_face = (Math.floor(Math.random() * 6) + 1).toString();
+        }else{
+            new_face = face[key];
+        }
         var dice = $('#'+key);
         dice.attr('src', 'images/dice-'+new_face+'.png');
         dice.attr('data-face', new_face);
@@ -58,10 +63,33 @@ function lock_change(dice){
     }
 }
 
+function show_score(){
+
+}
+
 var interval;
-$('#roll-button').on("mousedown", function () {
-    interval = window.setInterval(roll_die, 1);
-});
-$(document).mouseup(function(){
-    window.clearInterval(interval);
-});
+$('#roll-button').on({
+    mousedown: function () {
+        
+        $.ajax({
+            type: "PUT",
+            url: "/",
+            data: { position: "test_value" },
+            dataType: "json",
+            error: function(xhr,status,error){
+                alert("ERROR: " + xhr.status + ": " + xhr.statusText + "\n" + status + "\n" + error);
+            },
+            success: function(result,status,xhr){
+                console.log(result);
+                $('#debug').html("DEBUG?");
+            }
+        });
+        
+        window.clearInterval(interval);
+        interval = window.setInterval(roll_die, 20);}, 
+    mouseup: function(){
+        window.clearInterval(interval);
+        roll_die();
+        show_score();
+}});
+
