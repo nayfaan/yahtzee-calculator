@@ -1,5 +1,5 @@
-import services.yahtzee
-from services.yahtzee import *
+import services.probability
+from services.probability import *
 
 #Flask: Web app wrapper
 from flask import Flask, render_template, request, escape, url_for, redirect, make_response
