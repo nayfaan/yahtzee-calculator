@@ -33,9 +33,35 @@ var dice_list = {
     "dice-4": null,
     "dice-5": null
 };
+
 function roll_die(){
     for(var key in dice_list) {
         var value = dice_list[key];
-        document.getElementById(key).innerHTML = '<img src="images/dice-'+(Math.floor(Math.random() * 6) + 1).toString()+'.png" class="dice"/>';
+        var new_face = (Math.floor(Math.random() * 6) + 1).toString();
+        var dice = $('#'+key);
+        dice.attr('src', 'images/dice-'+new_face+'.png');
+        dice.attr('data-face', new_face);
     }
 }
+
+function lock_change(dice){
+    if (dice.src.match(/dice-(\d)/i)[1] != 0){
+        var lock = document.getElementById(dice.id.replace("dice", "lock"));
+        var is_locked = $(dice).data("locked");
+        $(dice).attr("data-locked", $(dice).attr("data-locked") == '0' ? '1' : '0');
+        if ($(dice).attr("data-locked") == 1){
+            $(lock).css("opacity", 1);
+        }else{
+            $(lock).css("opacity", 0);
+        }
+        //stackoverflow.com/questions/3807736
+    }
+}
+
+var interval;
+$('#roll-button').on("mousedown", function () {
+    interval = window.setInterval(roll_die, 1);
+});
+$(document).mouseup(function(){
+    window.clearInterval(interval);
+});

@@ -62,10 +62,17 @@ table {
     height: 1em;
 }
 
-.dice-td {
+.dice-td,.lock-td {
     padding: 1%;
+    width: 20%;
+    text-align: center;
 }
 
 .dice {
     max-width: 100%;
+}
+
+.lock {
+    width: 25%;
+    opacity: 0;
 }

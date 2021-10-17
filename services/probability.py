@@ -263,24 +263,6 @@ def sublist(parent_list,child_list):
             
     return sublist
 
-'''def restrict_possibilities_locked(roll, sort = False):
-    possibilities_sorted_locked = sort_sort_list(roll_results())
-    locked_list = []
-    for y in roll.data:
-        if y.locked:
-            locked_list.append(y.face)
-    
-    filtered_possibilities = []
-    for x in possibilities_sorted_locked:
-        if sublist(x,locked_list):
-            filtered_possibilities.append(x)
-    if sort:
-        for i in range(len(filtered_possibilities)):
-            filtered_possibilities[i] = tuple(sorted(list(filtered_possibilities[i])))
-        filtered_possibilities = sorted(filtered_possibilities)
-    
-    return filtered_possibilities'''
-
 def roll_possibilities_locked(roll):
     face_locked = get_locked_list(roll)
             
@@ -292,17 +274,6 @@ def roll_possibilities_locked(roll):
     #possibilities.append(tuple([i1+1,i2+1,i3+1,i4+1,i5+1]))
     
     return possibilities_locked
-
-
-#WRONG
-'''def calc_expectation_locked(roll):
-    for face in set(restrict_possibilities_locked(roll, True)):
-        score_list = rolls(face2data(face)).score
-        face_prob = calc_probability(face,roll)
-        #print(face,score_list,face_prob)#debug
-        for score_item in expect_base_dict.keys():
-            expect_base_dict_empty[score_item] += score_list[score_item] * face_prob
-    return expect_base_dict_empty'''
 
 if __name__ == "__main__":
     dice1 = dice(1,True)

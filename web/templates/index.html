@@ -18,30 +18,13 @@
                                         <tr>
                                             <td colspan="2" style="text-align: center;">ターンTurn<br><span id="score_tu" class="score_num"></span>/12</td>
                                         </tr>
+                                        {% set score_names1 = [' エース Aces', ' デュース Deuces', ' トレイ Threes', ' フォー Fours', ' ファイブ Fives', ' シックス Sixes'] %}
+                                        {% for i in range(6) %}
                                         <tr>
-                                            <td><img src="images/icon-1.png" class="icon-score"/> エース Aces</td>
-                                            <td><span id="score_1" class="score_num"></span></td>
+                                            <td><img src="images/icon-{{i+1}}.png" class="icon-score"/>{{score_names1[i]}}</td>
+                                            <td><span id="score_{{i+1}}" class="score_num score_fillable"></span></td>
                                         </tr>
-                                        <tr>
-                                            <td><img src="images/icon-2.png" class="icon-score"/> デュース Deuces</td>
-                                            <td><span id="score_2" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-3.png" class="icon-score"/> トレイ Threes</td>
-                                            <td><span id="score_3" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-4.png" class="icon-score"/> フォー Fours</td>
-                                            <td><span id="score_4" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-5.png" class="icon-score"/> ファイブ Fives</td>
-                                            <td><span id="score_5" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-6.png" class="icon-score"/> シックス Sixes</td>
-                                            <td><span id="score_6" class="score_num"></span></td>
-                                        </tr>
+                                        {% endfor %}
                                         <tr id="subtotal">
                                             <td>小計 Subtotal</td>
                                             <td><span id="score_st" class="score_num"></span>/63</td>
@@ -50,30 +33,14 @@
                                             <td>ボーナス Bonus＋35</td>
                                             <td><span id="score_bo" class="score_num"></span></td>
                                         </tr>
-                                        <tr id="choice">
-                                            <td><img src="images/icon-ch.png" class="icon-score"/> チョイス Choice</td>
-                                            <td><span id="score_ch" class="score_num"></span></td>
-                                        </tr>
+                                        {% set score_names2 = [' チョイス Choice', ' フォーダイス 4 of a Kind', ' フルハウス Full House', ' S.ストレート S. Straight', ' B.ストレート L. Straight', ' ヨット Yacht'] %}
+                                        {% set score_ids2 = ['ch', '4k', 'fh', 'ss', 'bs', 'ya'] %}
+                                        {% for i in range(6) %}
                                         <tr>
-                                            <td><img src="images/icon-4k.png" class="icon-score"/> フォーダイス 4 of a Kind</td>
-                                            <td><span id="score_4k" class="score_num"></span></td>
+                                            <td><img src="images/icon-{{score_ids2[i]}}.png" class="icon-score"/>{{score_names2[i]}}</td>
+                                            <td><span id="score_{{score_ids2[i]}}" class="score_num score_fillable"></span></td>
                                         </tr>
-                                        <tr>
-                                            <td><img src="images/icon-fh.png" class="icon-score"/> フルハウス Full House</td>
-                                            <td><span id="score_fh" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-ss.png" class="icon-score"/> S.ストレート S. Straight</td>
-                                            <td><span id="score_ss" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-ls.png" class="icon-score"/> B.ストレート L. Straight</td>
-                                            <td><span id="score_bs" class="score_num"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><img src="images/icon-ya.png" class="icon-score"/> ヨット Yacht</td>
-                                            <td><span id="score_ya" class="score_num"></span></td>
-                                        </tr>
+                                        {% endfor %}
                                         <tr id="total">
                                             <td>総合得点 Total</td>
                                             <td><span id="score_to" class="score_num"></span></td>
@@ -92,14 +59,17 @@
                                                     <table class="double-border" style="width: 100%;">
                                                         <tbody>
                                                             <tr>
-                                                                <td class="dice-td"><span id="dice-1"></span></td>
-                                                                <td class="dice-td"><span id="dice-2"></span></td>
-                                                                <td class="dice-td"><span id="dice-3"></span></td>
-                                                                <td class="dice-td"><span id="dice-4"></span></td>
-                                                                <td class="dice-td"><span id="dice-5"></span></td>
+                                                                {% for i in range(5) %}
+                                                                <td class="dice-td"><div><img src="images/dice-0.png" class="dice" id="dice-{{i+1}}" data-locked="0" data-face="0" onclick="lock_change(this)"/></div></td>
+                                                                {% endfor %}
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="5" style="text-align: center;"><button type="button" onclick="roll_die()">ROLL</button></td>
+                                                                {% for i in range(5) %}
+                                                                <td class="lock-td"><div><img src="images/lock.png" class="lock" id="lock-{{i+1}}"/></div></td>
+                                                                {% endfor %}
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="5" style="text-align: center;"><button type="button" id="roll-button">ROLL</button></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -107,10 +77,13 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><button type="button" onclick="fill_score()">SCORE!</button></td>
+                                            <td><button type="button">SCORE!(WIP)</button></td>
                                         </tr>
                                         <tr>
-                                            <td></td>
+                                            <td>
+                                                <div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
