@@ -309,7 +309,22 @@ def roll_results_probability(roll):
         probability_dict.update({face:{"probability": calc_probability(face,roll), "score": score(face)}})
     return probability_dict
 
-def decision_tree(roll):
+class node():
+    lock_matrix = list(itertools.product((False, True), repeat = 5))
+    
+    def __init__(self, roll):
+        self.tree = decision_tree(roll)
+        self.prob
+        self.score
+        #WIP
+    
+    def decision_tree(self, roll):
+        pass
+        
+    def __str__(self):
+        return 'WIP'
+
+def decision_tree(roll):#To be depreciated
     lock_decision_tree_temp = set()
     lock_decision_tree = []
     lock_matrix = list(itertools.product((False, True), repeat = 5))
@@ -360,4 +375,4 @@ if __name__ == "__main__":
     dice5 = dice(3,False)
     roll = rolls((dice1,dice2,dice3,dice4,dice5))
 
-    print(full_analysis(roll))
+    print(decision_tree(roll))
